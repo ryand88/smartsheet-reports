@@ -1,6 +1,6 @@
 const express = require("express"),
   router = express.Router(),
-  config = require("../config.json"),
+  config = require("../config/config.js"),
   qs = require("querystring"),
   smarclient = require("smartsheet"),
   fs = require("fs");
