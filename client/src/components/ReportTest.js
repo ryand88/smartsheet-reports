@@ -41,7 +41,7 @@ const ReportTest = ({ sheetId }) => {
   const classes = useStyles();
 
   useEffect(() => {
-    console.log(createDateObject("2019-06-3", "12:52 a", 6));
+    console.log(createDateObject("2019-06-2", "12:52 a", 6, true, [9, 17]));
 
     axios.get(`/api/sheets/${sheetId}`).then(res => {
       setSheetData(res.data);
@@ -169,8 +169,6 @@ const ReportTest = ({ sheetId }) => {
       console.log(res.data);
     });
   }, [sheetId]);
-
-  console.log(sheetRows);
 
   const testfunc = node => {
     console.log(node);

@@ -1,25 +1,13 @@
 export default (
   dateString,
-  timeString,
+  timeString = "00:00",
   timeZone = 0,
-  ignoreWeekends = true
+  skipWeekends = true,
+  startHour = 9,
+  endHour = 17
 ) => {
-  let dateObject = new Date(dateString);
+  const dateObject = new Date(dateString);
   dateObject.setHours(dateObject.getHours() + timeZone);
-
-  if (ignoreWeekends === true) {
-    const weekDay = dateObject.getDay();
-
-    if (weekDay === 6) {
-      dateObject.setDate(dateObject.getDate() + 2);
-      dateObject.setHours(dateObject.getHours() + 9 - timeZone);
-      return dateObject;
-    } else if (weekDay === 0) {
-      dateObject.setDate(dateObject.getDate() + 1);
-      dateObject.setHours(dateObject.getHours() + 9 - timeZone);
-      return dateObject;
-    }
-  }
 
   const splitTimeString = timeString.split(":");
   const lastChar = splitTimeString[1]
@@ -39,5 +27,27 @@ export default (
   dateObject.setMinutes(minutes);
   dateObject.setSeconds(0);
 
+  if (skipWeekends) {
+    if (dateObject.getDay() > 0 && dateObject.getDay() < 6) {
+      const currentHour = dateObject.getHours();
+      if (currentHour < startHour) {
+        dateObject.setHours(startHour);
+        dateObject.setMinutes((startHour % 1) * 60);
+      } else if (currentHour >= endHour) {
+        dateObject.setHours(24 + startHour);
+        dateObject.setMinutes((startHour % 1) * 60);
+      }
+    }
+
+    if (dateObject.getDay() === 6) {
+      dateObject.setDate(dateObject.getDate() + 2);
+      dateObject.setHours(startHour);
+      dateObject.setMinutes((startHour % 1) * 60);
+    } else if (dateObject.getDay() === 0) {
+      dateObject.setDate(dateObject.getDate() + 1);
+      dateObject.setHours(startHour);
+      dateObject.setMinutes((startHour % 1) * 60);
+    }
+  }
   return dateObject;
 };
