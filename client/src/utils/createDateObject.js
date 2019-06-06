@@ -27,6 +27,8 @@ export default (
   dateObject.setMinutes(minutes);
   dateObject.setSeconds(0);
 
+  const originalDate = new Date(dateObject);
+
   if (skipWeekends) {
     if (dateObject.getDay() > 0 && dateObject.getDay() < 6) {
       const currentHour = dateObject.getHours();
@@ -49,5 +51,5 @@ export default (
       dateObject.setMinutes((startHour % 1) * 60);
     }
   }
-  return dateObject;
+  return { adjustedDate: dateObject, originalDate };
 };
