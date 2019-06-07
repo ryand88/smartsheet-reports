@@ -3,6 +3,8 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import axios from "axios";
 
 import createDateObject from "../utils/createDateObject";
@@ -39,11 +41,15 @@ const useStyles = makeStyles(theme => ({
     // marginRight: theme.spacing(1),
     margin: "5px",
     width: 200
+  },
+  checkBox: {
+    marginTop: "0.5em",
+    marginRight: "0.5em"
   }
 }));
 
 const ReportTest = ({ sheetId }) => {
-  const [isDateFilter, toggleDateFilter] = useState(true);
+  const [isDateFilter, toggleDateFilter] = useState(false);
   const [beginDateFilter, setBeginDateFilter] = useState(monthStart);
   const [endDateFilter, setEndDateFilter] = useState(monthEnd);
   const [sheetData, setSheetData] = useState({ columns: [] });
@@ -297,6 +303,19 @@ const ReportTest = ({ sheetId }) => {
             shrink: true
           }}
           margin="normal"
+        />
+        <FormControlLabel
+          className={classes.checkBox}
+          control={
+            <Checkbox
+              checked={isDateFilter}
+              onChange={() => toggleDateFilter(!isDateFilter)}
+              value="checkedB"
+              color="primary"
+            />
+          }
+          labelPlacement="start"
+          label="Filter by Date?"
         />
         <TextField
           id="date"

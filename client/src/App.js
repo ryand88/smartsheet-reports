@@ -13,15 +13,6 @@ function App() {
   const [user, setUser] = useState();
 
   useEffect(() => {
-    const date = new Date();
-
-    const lastDay = new Date(date.getYear(), date.getMonth() + 1, 0);
-
-    // const dateTest = new Date();
-    // console.log(dateTest.getTime());
-    // dateTest.setMinutes((24 - dateTest.getHours()) * 60 + 9 * 60);
-    // console.log(dateTest);
-
     const isCallback = window.location.href.match(/callback/); // Check for callback URL
     const localStorageAuth = localStorage.getItem("auth");
     if (isCallback) {
