@@ -24,8 +24,6 @@ router.get("/:id", (req, res) => {
     accessToken: req.headers.access_token
   });
 
-  console.log(req.params.id);
-
   const { id } = req.params;
   // Get sheet
   smartsheet.sheets

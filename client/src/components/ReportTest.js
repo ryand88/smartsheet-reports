@@ -23,14 +23,29 @@ const defaultCompleted = [
   }
 ];
 
+const now = new Date();
+const monthStart = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
+const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
 const useStyles = makeStyles(theme => ({
   root: {
     margin: "1em",
     padding: theme.spacing(3, 2)
+  },
+  textField: {
+    // marginTop: "20px",
+    // marginBottom: "20px",
+    // marginLeft: theme.spacing(1),
+    // marginRight: theme.spacing(1),
+    margin: "5px",
+    width: 200
   }
 }));
 
 const ReportTest = ({ sheetId }) => {
+  const [isDateFilter, toggleDateFilter] = useState(true);
+  const [beginDateFilter, setBeginDateFilter] = useState(monthStart);
+  const [endDateFilter, setEndDateFilter] = useState(monthEnd);
   const [sheetData, setSheetData] = useState({ columns: [] });
   const [sheetRows, setSheetRows] = useState([]);
   const [completedKpiData, setCompletedKpiData] = useState(defaultCompleted);
@@ -52,152 +67,6 @@ const ReportTest = ({ sheetId }) => {
     axios.get(`/api/sheets/${sheetId}`).then(res => {
       setSheetData(res.data);
       setSheetRows(res.data.rows.filter(row => row.cells[8].value)); // remove rows without start date
-      // let onSiteMade = [];
-      // let onSiteMissed = [];
-      // let onSiteNA = [];
-      // let verbalMade = [];
-      // let verbalMissed = [];
-      // let firstVisit = [];
-      // let firstVisitMissed = [];
-      // let firstVisitNA = [];
-      // let completedOnTime = [];
-      // let completedOnTimeMissed = [];
-
-      // const rows = res.data.rows.filter(row => row.cells[8].value);
-      // const completedRows = rows.filter(
-      //   row =>
-      //     row.cells[8].value &&
-      //     row.cells[9].value &&
-      //     row.cells[10].value &&
-      //     row.cells[11].value &&
-      //     // row.cells[16].value &&
-      //     row.cells[14].value
-      // );
-      // const incompleteRows = rows.filter(
-      //   row =>
-      //     !row.cells[8].value ||
-      //     !row.cells[9].value ||
-      //     !row.cells[10].value ||
-      //     !row.cells[11].value ||
-      //     // row.cells[16].value ||
-      //     !row.cells[14].value
-      // );
-      // setCompletedRows(completedRows);
-      // setIncompleteRows(incompleteRows);
-      // const completedKPIs = completedRows.reduce(
-      //   (current, row) => {
-      //     const verbalRequestTime = createDateObject(
-      //       row.cells[8].value,
-      //       row.cells[9].value,
-      //       6,
-      //       true
-      //     );
-      //     const verbalResponseTime = createDateObject(
-      //       row.cells[10].value,
-      //       row.cells[11].value,
-      //       6,
-      //       true
-      //     );
-      //     const onSiteTime = createDateObject(
-      //       row.cells[12].value,
-      //       "12:00am",
-      //       6,
-      //       false
-      //     );
-      //     const completedDate = createDateObject(
-      //       row.cells[14].value,
-      //       "12:00am",
-      //       6,
-      //       false
-      //     );
-      //     // console.log(
-      //     //   (Math.abs(verbalResponseTime - verbalRequestTime) / 60) * 60 * 1000
-      //     // );
-      //     const msToHrs = 60 * 60 * 1000;
-      //     if ((verbalResponseTime - verbalRequestTime) / msToHrs > 2) {
-      //       current[0]["KPI Missed"] = current[0]["KPI Missed"] + 1;
-      //       verbalMissed.push(row);
-      //     } else {
-      //       current[0]["KPI Made"] = current[0]["KPI Made"] + 1;
-      //       verbalMade.push(row);
-      //     }
-
-      //     if (!row.cells[12].value) {
-      //       current[1]["N/A"] = current[1]["N/A"] + 1;
-      //       onSiteNA.push(row);
-      //     } else if ((onSiteTime - verbalRequestTime) / msToHrs > 48) {
-      //       current[1]["KPI Missed"] = current[1]["KPI Missed"] + 1;
-      //       onSiteMissed.push(row);
-      //     } else {
-      //       current[1]["KPI Made"] = current[1]["KPI Made"] + 1;
-      //       onSiteMade.push(row);
-      //     }
-
-      //     if (row.cells[13].value) {
-      //       current[2]["KPI Missed"] = current[2]["KPI Missed"] + 1;
-      //       firstVisitMissed.push(row);
-      //     } else if (!row.cells[13].value && !row.cells[12].value) {
-      //       current[2]["N/A"] = current[2]["N/A"] + 1;
-      //       firstVisitNA.push(row);
-      //     } else {
-      //       current[2]["KPI Made"] = current[2]["KPI Made"] + 1;
-      //       firstVisit.push(row);
-      //     }
-
-      //     if (
-      //       (completedDate - verbalRequestTime) / msToHrs >
-      //       completionDaysGoal * 24
-      //     ) {
-      //       current[3]["KPI Missed"] = current[3]["KPI Missed"] + 1;
-      //       completedOnTimeMissed.push(row);
-      //     } else {
-      //       current[3]["KPI Made"] = current[3]["KPI Made"] + 1;
-      //       completedOnTime.push(row);
-      //     }
-
-      //     return current;
-      //   },
-
-      //   [
-      //     {
-      //       kpiType: "Verbal Response",
-      //       "KPI Made": 0,
-      //       "KPI Missed": 0,
-      //       "N/A": 0
-      //     },
-      //     {
-      //       kpiType: "On Site",
-      //       "KPI Made": 0,
-      //       "KPI Missed": 0,
-      //       "N/A": 0
-      //     },
-      //     {
-      //       kpiType: "First Visit",
-      //       "KPI Made": 0,
-      //       "KPI Missed": 0,
-      //       "N/A": 0
-      //     },
-      //     {
-      //       kpiType: `In ${completionDaysGoal} days`,
-      //       "KPI Made": 0,
-      //       "KPI Missed": 0,
-      //       "N/A": 0
-      //     }
-      //   ]
-      // );
-      // setCompletedKpiData(completedKPIs);
-      // setTables({
-      //   onSiteMade,
-      //   onSiteMissed,
-      //   onSiteNA,
-      //   verbalMade,
-      //   verbalMissed,
-      //   firstVisit,
-      //   firstVisitMissed,
-      //   firstVisitNA,
-      //   completedOnTime,
-      //   completedOnTimeMissed
-      // });
 
       console.log(res.data);
     });
@@ -215,7 +84,17 @@ const ReportTest = ({ sheetId }) => {
     let completedOnTime = [];
     let completedOnTimeMissed = [];
 
-    const rows = sheetRows;
+    let rows = [];
+
+    if (isDateFilter) {
+      rows = sheetRows.filter(row => {
+        const rowDate = new Date(row.cells[8].value);
+        return rowDate >= beginDateFilter && rowDate < endDateFilter;
+      });
+    } else {
+      rows = sheetRows;
+    }
+
     const completedRows = rows.filter(
       row =>
         row.cells[8].value &&
@@ -338,7 +217,7 @@ const ReportTest = ({ sheetId }) => {
           "N/A": 0
         },
         {
-          kpiType: `In ${completionDaysGoal} days`,
+          kpiType: "Completion",
           "KPI Made": 0,
           "KPI Missed": 0,
           "N/A": 0
@@ -358,10 +237,15 @@ const ReportTest = ({ sheetId }) => {
       completedOnTime,
       completedOnTimeMissed
     });
-  }, [completionDaysGoal, sheetRows]);
+  }, [
+    completionDaysGoal,
+    sheetRows,
+    isDateFilter,
+    beginDateFilter,
+    endDateFilter
+  ]);
 
   const graphClick = node => {
-    console.log(node);
     if (node.indexValue === "Verbal Response") {
       if (node.id === "KPI Made") {
         setTableData(tables.verbalMade);
@@ -385,7 +269,7 @@ const ReportTest = ({ sheetId }) => {
         setTableData(tables.firstVisitMissed);
       }
     }
-    if (node.indexValue === `In ${completionDaysGoal} days`) {
+    if (node.indexValue === "Completion") {
       if (node.id === "KPI Made") {
         setTableData(tables.completedOnTime);
       } else {
@@ -401,19 +285,42 @@ const ReportTest = ({ sheetId }) => {
           FM KPI's - Complete: {completedRowsState.length} / Incomplete:{" "}
           {incompleteRowsState.length}
         </Typography>
+
         <TextField
-          margin="dense"
           id="standard-number"
           label="Days to completion KPI"
           value={completionDaysGoal}
           onChange={onChange}
           type="number"
-          // className={classes.textField}
+          className={classes.textField}
           InputLabelProps={{
             shrink: true
           }}
           margin="normal"
         />
+        <TextField
+          id="date"
+          label="Begin Filter"
+          type="date"
+          value={beginDateFilter.toISOString().substring(0, 10)}
+          onChange={e => setBeginDateFilter(new Date(e.target.value))}
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true
+          }}
+        />
+        <TextField
+          id="date"
+          label="End Filter"
+          type="date"
+          value={endDateFilter.toISOString().substring(0, 10)}
+          onChange={e => setEndDateFilter(new Date(e.target.value))}
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true
+          }}
+        />
+
         <BarChart data={completedKpiData} onClick={graphClick} />
       </Paper>
       {tableData.length > 0 && (

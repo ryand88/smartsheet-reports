@@ -31,7 +31,7 @@ const BarChart = ({ data, onClick }) => {
         layout="horizontal"
         // colors={{ from: "color" }}
         // colors={{ scheme: "dark2" }}
-        colors={["#42f44e", "#ed5140", "#656565"]}
+        colors={["#76d275", "#ff6659", "#bdbdbd"]}
         defs={[
           {
             id: "dots",
