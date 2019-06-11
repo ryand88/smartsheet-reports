@@ -67,16 +67,17 @@ const ReportTest = ({ sheetId }) => {
 
   const classes = useStyles();
 
-  useEffect(() => {
-    // console.log(createDateObject("2019-06-02", "12:52 am", 6, true, [9, 17]));
+  useEffect(
+    function fetchSheetData() {
+      axios.get(`/api/sheets/${sheetId}`).then(res => {
+        setSheetData(res.data);
+        setSheetRows(res.data.rows.filter(row => row.cells[8].value)); // remove rows without start date
 
-    axios.get(`/api/sheets/${sheetId}`).then(res => {
-      setSheetData(res.data);
-      setSheetRows(res.data.rows.filter(row => row.cells[8].value)); // remove rows without start date
-
-      console.log(res.data);
-    });
-  }, [sheetId]);
+        console.log(res.data);
+      });
+    },
+    [sheetId]
+  );
 
   useEffect(() => {
     let onSiteMade = [];
@@ -93,9 +94,15 @@ const ReportTest = ({ sheetId }) => {
     let rows = [];
 
     if (isDateFilter) {
+      const lower = beginDateFilter.getDate()
+        ? beginDateFilter
+        : new Date(-8640000000000000);
+      const upper = endDateFilter.getDate()
+        ? endDateFilter
+        : new Date(8640000000000000);
       rows = sheetRows.filter(row => {
         const rowDate = new Date(row.cells[8].value);
-        return rowDate >= beginDateFilter && rowDate < endDateFilter;
+        return rowDate >= lower && rowDate < upper;
       });
     } else {
       rows = sheetRows;
@@ -147,9 +154,6 @@ const ReportTest = ({ sheetId }) => {
           6,
           false
         );
-        // console.log(
-        //   (Math.abs(verbalResponseTime - verbalRequestTime) / 60) * 60 * 1000
-        // );
         const msToHrs = 60 * 60 * 1000;
         if (
           (verbalResponseTime.adjustedDate - verbalRequestTime.adjustedDate) /
@@ -288,22 +292,10 @@ const ReportTest = ({ sheetId }) => {
     <div>
       <Paper className={classes.root}>
         <Typography variant="h5">
-          FM KPI's - Complete: {completedRowsState.length} / Incomplete:{" "}
-          {incompleteRowsState.length}
+          FM KPI's - Complete: {completedRowsState.length}
         </Typography>
+        <BarChart data={completedKpiData} onClick={graphClick} />
 
-        <TextField
-          id="standard-number"
-          label="Days to completion KPI"
-          value={completionDaysGoal}
-          onChange={onChange}
-          type="number"
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true
-          }}
-          margin="normal"
-        />
         <FormControlLabel
           className={classes.checkBox}
           control={
@@ -321,7 +313,11 @@ const ReportTest = ({ sheetId }) => {
           id="date"
           label="Begin Filter"
           type="date"
-          value={beginDateFilter.toISOString().substring(0, 10)}
+          value={
+            beginDateFilter.getDate()
+              ? beginDateFilter.toISOString().substring(0, 10)
+              : ""
+          }
           onChange={e => setBeginDateFilter(new Date(e.target.value))}
           className={classes.textField}
           InputLabelProps={{
@@ -332,26 +328,38 @@ const ReportTest = ({ sheetId }) => {
           id="date"
           label="End Filter"
           type="date"
-          value={endDateFilter.toISOString().substring(0, 10)}
+          value={
+            endDateFilter.getDate()
+              ? endDateFilter.toISOString().substring(0, 10)
+              : ""
+          }
           onChange={e => setEndDateFilter(new Date(e.target.value))}
           className={classes.textField}
           InputLabelProps={{
             shrink: true
           }}
         />
-
-        <BarChart data={completedKpiData} onClick={graphClick} />
+        <TextField
+          id="standard-number"
+          label="Days to completion KPI"
+          value={completionDaysGoal}
+          onChange={onChange}
+          type="number"
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true
+          }}
+          margin="normal"
+        />
       </Paper>
       {tableData.length > 0 && (
         <DataTable
-          columns={sheetData.columns.filter((column, key) => {
-            return key === 2 || key === 3 || key === 5 || key === 7;
-          })}
-          rows={tableData.map(row =>
-            row.cells.filter((column, key) => {
-              return key === 2 || key === 3 || key === 5 || key === 7;
-            })
-          )}
+          dataArray={tableData}
+          keys={[2, 3, 5, 7]}
+          // columns={sheetData.columns.filter((column, key) => {
+          //   return key === 2 || key === 3 || key === 5 || key === 7;
+          // })}
+          columns={sheetData.columns}
         />
       )}
     </div>

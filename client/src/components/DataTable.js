@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -6,6 +6,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+
+import TableModal from "./TableModal";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -18,7 +20,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function DataTable({ columns, rows }) {
+function DataTable({ columns, dataArray, keys }) {
+  const [modalData, setModalData] = useState({});
+
   const classes = useStyles();
 
   return (
@@ -26,21 +30,36 @@ function DataTable({ columns, rows }) {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            {columns.map(column => (
-              <TableCell key={column.id}>{column.title}</TableCell>
-            ))}
+            {keys.map(tableKey => {
+              return (
+                <TableCell key={columns[tableKey].id}>
+                  {columns[tableKey].title}
+                </TableCell>
+              );
+            })}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, key) => (
-            <TableRow key={key}>
-              {row.map(cell => (
-                <TableCell key={[cell.columnId, key]}>{cell.value}</TableCell>
-              ))}
-            </TableRow>
-          ))}
+          {dataArray.map(row => {
+            return (
+              <TableRow hover onClick={() => setModalData(row)} key={row.id}>
+                {keys.map(tableKey => {
+                  return (
+                    <TableCell key={row.id + row.cells[tableKey].columnId}>
+                      {row.cells[tableKey].value}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
+      <TableModal
+        modalLabels={columns}
+        modalData={modalData}
+        handleClose={() => setModalData({})}
+      />
     </Paper>
   );
 }
