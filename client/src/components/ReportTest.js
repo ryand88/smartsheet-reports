@@ -291,9 +291,6 @@ const ReportTest = ({ sheetId }) => {
   return (
     <div>
       <Paper className={classes.root}>
-        <Typography variant="h5">
-          FM KPI's - Complete: {completedRowsState.length}
-        </Typography>
         <BarChart data={completedKpiData} onClick={graphClick} />
 
         <FormControlLabel

@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Router, navigate } from "@reach/router";
 import axios from "axios";
+import { createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/styles";
+import { lightGreen, deepOrange } from "@material-ui/core/colors";
 
+import TopBar from "./components/TopBar";
 import SheetList from "./components/SheetList";
 import ReportTest from "./components/ReportTest";
 
 import setAuthToken from "./utils/setAuthToken";
 import smartsheetRedirectURL from "./utils/smartsheetRedirectURL";
+
+const theme = createMuiTheme({
+  palette: {
+    primary: { main: lightGreen["A700"] }, // Purple and green play nicely together.
+    secondary: { main: deepOrange[500] } // This is just green.A700 as hex.
+  }
+});
 
 function App() {
   const [auth, setAuth] = useState();
@@ -50,14 +61,17 @@ function App() {
 
   return (
     <div className="App">
-      {user ? (
-        <Router>
-          <ReportTest path="/" sheetId={7928597139744644} />
-          <SheetList path="/sheet-list" />
-        </Router>
-      ) : (
-        <h1>Loading...</h1>
-      )}
+      <ThemeProvider theme={theme}>
+        <TopBar title="FM KPI's" />
+        {user ? (
+          <Router>
+            <ReportTest path="/" sheetId={7928597139744644} />
+            <SheetList path="/sheet-list" />
+          </Router>
+        ) : (
+          <h1>Loading...</h1>
+        )}
+      </ThemeProvider>
     </div>
   );
 }
