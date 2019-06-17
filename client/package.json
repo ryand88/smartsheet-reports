@@ -1,6 +1,10 @@
 {
   "name": "client",
   "version": "0.1.0",
+  "engines": {
+    "node": "8.15.1",
+    "npm": "6.4.1"
+  },
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.0.1",
