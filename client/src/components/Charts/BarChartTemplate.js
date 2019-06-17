@@ -1,40 +1,28 @@
 import React from "react";
 import { ResponsiveBar } from "@nivo/bar";
 
-const BarChart = ({ data, onClick }) => {
+const BarChartTemplate = ({
+  data = [{}],
+  onClick = node => console.log("clicked ", node),
+  keys = [""],
+  indexBy = "",
+  // colors = ["#76d275", "#ff6659", "#bdbdbd"],
+  colors,
+  bottomLegend = "123",
+  layout = "horizontal"
+}) => {
+  console.log(keys);
   return (
     <div style={{ height: `${data.length * 100}px`, width: "100%" }}>
       <ResponsiveBar
         onClick={onClick}
         data={data}
-        keys={["KPI Made", "KPI Missed", "N/A"]}
-        indexBy="kpiType"
+        keys={keys}
+        indexBy={indexBy}
         margin={{ top: 50, right: 30, bottom: 50, left: 60 }}
         padding={0.3}
-        layout="horizontal"
-        // colors={{ from: "color" }}
-        // colors={{ scheme: "dark2" }}
-        colors={["#76d275", "#ff6659", "#bdbdbd"]}
-        defs={[
-          {
-            id: "dots",
-            type: "patternDots",
-            background: "inherit",
-            color: "#38bcb2",
-            size: 4,
-            padding: 1,
-            stagger: true
-          },
-          {
-            id: "lines",
-            type: "patternLines",
-            background: "inherit",
-            color: "#eed312",
-            rotation: -45,
-            lineWidth: 6,
-            spacing: 10
-          }
-        ]}
+        layout={layout}
+        colors={colors}
         borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
         axisTop={null}
         axisRight={null}
@@ -42,7 +30,7 @@ const BarChart = ({ data, onClick }) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "Completed Service Requests",
+          legend: bottomLegend,
           legendPosition: "middle",
           legendOffset: 32
         }}
@@ -54,6 +42,8 @@ const BarChart = ({ data, onClick }) => {
           legendPosition: "middle",
           legendOffset: -40
         }}
+        titleOffsetX={11}
+        titleOffsetY={-28}
         labelSkipWidth={12}
         labelSkipHeight={12}
         labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
@@ -89,4 +79,4 @@ const BarChart = ({ data, onClick }) => {
   );
 };
 
-export default BarChart;
+export default BarChartTemplate;
