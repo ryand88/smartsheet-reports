@@ -1,10 +1,6 @@
 {
   "name": "oauth-flow-sample-node",
   "version": "1.0.1",
-  "engines": {
-    "node": "8.15.1",
-    "npm": "6.4.1"
-  },
   "main": "auth.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -24,13 +20,13 @@
   "homepage": "https://github.com/TaylorKrusen/oauth-flow-sample-node#readme",
   "description": "",
   "dependencies": {
-    "express": "^4.16.2",
+    "express": "^4.17.1",
     "path": "^0.12.7",
     "querystring": "^0.2.0",
-    "smartsheet": "^1.4.2"
+    "smartsheet": "^1.5.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.0"
+    "nodemon": "^1.19.1"
   },
   "proxy": "http://localhost:5000/"
 }
