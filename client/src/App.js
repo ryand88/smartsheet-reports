@@ -8,6 +8,7 @@ import { lightGreen, deepOrange } from "@material-ui/core/colors";
 import TopBar from "./components/TopBar";
 import SheetList from "./components/SheetList";
 import ReportTest from "./components/ReportTest";
+import ReportTemplate from "./components/ReportTemplate";
 
 import setAuthToken from "./utils/setAuthToken";
 import smartsheetRedirectURL from "./utils/smartsheetRedirectURL";
@@ -21,7 +22,7 @@ const theme = createMuiTheme({
 
 function App() {
   const [auth, setAuth] = useState();
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(false);
 
   useEffect(() => {
     const isCallback = window.location.href.match(/callback/); // Check for callback URL
@@ -42,15 +43,18 @@ function App() {
       // if auth state exists, fetch user data
       const { access_token } = auth;
       setAuthToken(access_token);
-      axios.get("/api/user/current-user").then(res => {
-        console.log(res.data);
-        setUser(res.data);
-      });
-      // .catch(
-      //   // if user can't be fetched, redirect to smartsheet login
-      //   () => (window.location.href = smartsheetRedirectURL)
-      // );
+      axios
+        .get("/api/user/current-user")
+        .then(res => {
+          console.log(res.data);
+          setUser(res.data);
+        })
+        .catch(
+          // if user can't be fetched, redirect to smartsheet login
+          () => (window.location.href = smartsheetRedirectURL)
+        );
     } else if (localStorageAuth) {
+      console.log("local");
       // if no auth state, but in local storage, copy local storage to auth state
       setAuth(JSON.parse(localStorageAuth));
     } else {
@@ -67,6 +71,7 @@ function App() {
           <Router>
             <ReportTest path="/" sheetId={7928597139744644} />
             <SheetList path="/sheet-list" />
+            <ReportTemplate path="/test" />
           </Router>
         ) : (
           <h1>Loading...</h1>
