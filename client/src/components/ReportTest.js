@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Select from "@material-ui/core/Select";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
 import axios from "axios";
 
 import createDateObject from "../utils/createDateObject";
@@ -35,10 +37,6 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3, 2)
   },
   textField: {
-    // marginTop: "20px",
-    // marginBottom: "20px",
-    // marginLeft: theme.spacing(1),
-    // marginRight: theme.spacing(1),
     margin: "5px",
     width: 200
   },
@@ -47,6 +45,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: "0.5em"
   }
 }));
+
+let whoFixedList = [];
 
 const ReportTest = ({ sheetId }) => {
   const [isDateFilter, toggleDateFilter] = useState(false);
@@ -60,18 +60,28 @@ const ReportTest = ({ sheetId }) => {
   const [completedRowsState, setCompletedRows] = useState([]);
   const [incompleteRowsState, setIncompleteRows] = useState([]);
   const [completionDaysGoal, setCompletionDaysGoal] = useState(10);
-
-  const onChange = e => {
-    setCompletionDaysGoal(e.target.value);
-  };
+  const [whoFixed, setWhoFixed] = useState("showAll");
+  const [whoInverse, setWhoInverse] = useState(false);
 
   const classes = useStyles();
+
+  const whoSelectOnChange = e => {
+    const newValue = e.target.value;
+
+    if (newValue === whoFixed) {
+      setWhoInverse(!whoInverse);
+    } else {
+      setWhoFixed(newValue);
+    }
+  };
 
   useEffect(
     function fetchSheetData() {
       axios.get(`/api/sheets/${sheetId}`).then(res => {
         setSheetData(res.data);
         setSheetRows(res.data.rows.filter(row => row.cells[8].value)); // remove rows without start date
+
+        whoFixedList = [...res.data.columns[17].options];
 
         console.log(res.data);
       });
@@ -108,7 +118,7 @@ const ReportTest = ({ sheetId }) => {
       rows = sheetRows;
     }
 
-    const completedRows = rows.filter(
+    let completedRows = rows.filter(
       row =>
         row.cells[8].value &&
         row.cells[9].value &&
@@ -128,6 +138,14 @@ const ReportTest = ({ sheetId }) => {
     );
     setCompletedRows(completedRows);
     setIncompleteRows(incompleteRows);
+
+    if (whoFixed !== "showAll") {
+      console.log("filter ", whoFixed);
+      completedRows = completedRows.filter(row => {
+        return (row.cells[17].value === whoFixed) !== whoInverse;
+      });
+    }
+
     const completedKPIs = completedRows.reduce(
       (current, row) => {
         const verbalRequestTime = createDateObject(
@@ -252,7 +270,9 @@ const ReportTest = ({ sheetId }) => {
     sheetRows,
     isDateFilter,
     beginDateFilter,
-    endDateFilter
+    endDateFilter,
+    whoFixed,
+    whoInverse
   ]);
 
   const graphClick = node => {
@@ -291,7 +311,11 @@ const ReportTest = ({ sheetId }) => {
   return (
     <div>
       <Paper className={classes.root}>
-        <BarChart data={completedKpiData} onClick={graphClick} />
+        <BarChart
+          data={completedKpiData}
+          onClick={graphClick}
+          dataLength={completedRowsState.length}
+        />
 
         <FormControlLabel
           className={classes.checkBox}
@@ -340,7 +364,7 @@ const ReportTest = ({ sheetId }) => {
           id="standard-number"
           label="Days to completion KPI"
           value={completionDaysGoal}
-          onChange={onChange}
+          onChange={e => setCompletionDaysGoal(e.target.value)}
           type="number"
           className={classes.textField}
           InputLabelProps={{
@@ -348,6 +372,29 @@ const ReportTest = ({ sheetId }) => {
           }}
           margin="normal"
         />
+        <InputLabel
+          htmlFor="whoFixed"
+          style={{ color: whoInverse ? "red" : "gray" }}
+        >
+          {whoInverse ? "Who Didn't Fix It?" : "Who Fixed It?"}
+        </InputLabel>
+        <Select
+          value={whoFixed}
+          onChange={e => whoSelectOnChange(e)}
+          inputProps={{
+            name: "who",
+            id: "whoFixed"
+          }}
+        >
+          <MenuItem value="showAll">
+            <em>Show All</em>
+          </MenuItem>
+          {whoFixedList.map(who => (
+            <MenuItem key={who} value={who}>
+              {who}
+            </MenuItem>
+          ))}
+        </Select>
       </Paper>
       {tableData.length > 0 && (
         <DataTable

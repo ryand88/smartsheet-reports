@@ -1,10 +1,11 @@
 import React from "react";
 import { ResponsiveBar } from "@nivo/bar";
 
-const BarChart = ({ data, onClick }) => {
+const BarChart = ({ data, onClick, dataLength = 1 }) => {
   return (
     <div style={{ height: `${data.length * 100}px`, width: "100%" }}>
       <ResponsiveBar
+        label={d => `${d.value} - ${Math.round((d.value / dataLength) * 100)}%`}
         onClick={onClick}
         data={data}
         keys={["KPI Made", "KPI Missed", "N/A"]}
@@ -56,7 +57,8 @@ const BarChart = ({ data, onClick }) => {
         }}
         labelSkipWidth={12}
         labelSkipHeight={12}
-        labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+        // labelTextColor={{ from: "color", modifiers: [["darker", 2]] }}
+        labelTextColor="black"
         legends={[
           {
             dataFrom: "keys",
