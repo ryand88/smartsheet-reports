@@ -4,7 +4,7 @@ export default (
   timeZone = 0,
   skipWeekends = true,
   startHour = 10,
-  endHour = 17
+  endHour = 16.5
 ) => {
   const dateObject = new Date(dateString);
   dateObject.setHours(dateObject.getHours() + timeZone);
@@ -31,7 +31,7 @@ export default (
 
   if (skipWeekends) {
     if (dateObject.getDay() > 0 && dateObject.getDay() < 6) {
-      const currentHour = dateObject.getHours();
+      const currentHour = dateObject.getHours() + dateObject.getMinutes() / 60;
       if (currentHour < startHour) {
         dateObject.setHours(startHour);
         dateObject.setMinutes((startHour % 1) * 60);
