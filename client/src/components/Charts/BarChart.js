@@ -5,7 +5,7 @@ const BarChart = ({ data, onClick, dataLength = 1 }) => {
   return (
     <div style={{ height: `${data.length * 100}px`, width: "100%" }}>
       <ResponsiveBar
-        label={d => `${d.value} - ${Math.round((d.value / dataLength) * 100)}%`}
+        label={d => `${Math.round((d.value / dataLength) * 100)}%`}
         onClick={onClick}
         data={data}
         keys={["KPI Made", "KPI Missed", "N/A"]}

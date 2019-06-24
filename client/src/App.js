@@ -51,13 +51,16 @@ function App() {
         })
         .catch(
           // if user can't be fetched, redirect to smartsheet login
-          () => (window.location.href = smartsheetRedirectURL)
+          err => {
+            window.location.href = smartsheetRedirectURL;
+          }
         );
     } else if (localStorageAuth) {
       console.log("local");
       // if no auth state, but in local storage, copy local storage to auth state
       setAuth(JSON.parse(localStorageAuth));
     } else {
+      console.log("else");
       // if no auth state or local storage, redirect to smartsheet login
       window.location.href = smartsheetRedirectURL;
     }

@@ -10,6 +10,9 @@ const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1
   },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1
+  },
   menuButton: {
     marginRight: theme.spacing(2)
   },
@@ -23,7 +26,7 @@ export default function TopBar({ title = "enter a title prop" }) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="sticky">
+      <AppBar className={classes.appBar} position="sticky">
         <Toolbar>
           {/* <IconButton
             edge="start"

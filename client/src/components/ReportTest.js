@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
 import axios from "axios";
 
 import createDateObject from "../utils/createDateObject";
 
 import BarChart from "./Charts/BarChart";
 import DataTable from "./DataTable";
+import SideDrawer from "./SideDrawer";
 
 const defaultCompleted = [
   {
@@ -31,10 +26,18 @@ const now = new Date();
 const monthStart = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
 const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
+const drawerWidth = 240;
+
 const useStyles = makeStyles(theme => ({
   root: {
     margin: "1em",
     padding: theme.spacing(3, 2)
+  },
+  container: {
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: drawerWidth
+      // width: `calc(100% - ${drawerWidth}px)`
+    }
   },
   textField: {
     margin: "5px",
@@ -49,7 +52,7 @@ const useStyles = makeStyles(theme => ({
 let whoFixedList = [];
 
 const ReportTest = ({ sheetId }) => {
-  const [isDateFilter, toggleDateFilter] = useState(false);
+  const [isDateFilter, toggleDateFilter] = useState(true);
   const [beginDateFilter, setBeginDateFilter] = useState(monthStart);
   const [endDateFilter, setEndDateFilter] = useState(monthEnd);
   const [sheetData, setSheetData] = useState({ columns: [] });
@@ -136,8 +139,6 @@ const ReportTest = ({ sheetId }) => {
         // row.cells[16].value ||
         !row.cells[14].value
     );
-    setCompletedRows(completedRows);
-    setIncompleteRows(incompleteRows);
 
     if (whoFixed !== "showAll") {
       console.log("filter ", whoFixed);
@@ -145,6 +146,8 @@ const ReportTest = ({ sheetId }) => {
         return (row.cells[17].value === whoFixed) !== whoInverse;
       });
     }
+    setCompletedRows(completedRows);
+    setIncompleteRows(incompleteRows);
 
     const completedKPIs = completedRows.reduce(
       (current, row) => {
@@ -309,100 +312,32 @@ const ReportTest = ({ sheetId }) => {
   };
 
   return (
-    <div>
+    <div className={classes.container}>
       <Paper className={classes.root}>
+        <SideDrawer
+          beginDateFilter={beginDateFilter}
+          endDateFilter={endDateFilter}
+          setBeginDateFilter={setBeginDateFilter}
+          setEndDateFilter={setEndDateFilter}
+          isDateFilter={isDateFilter}
+          toggleDateFilter={toggleDateFilter}
+          completionDaysGoal={completionDaysGoal}
+          setCompletionDaysGoal={setCompletionDaysGoal}
+          whoFixed={whoFixed}
+          whoFixedList={whoFixedList}
+          whoInverse={whoInverse}
+          whoSelectOnChange={whoSelectOnChange}
+        />
         <BarChart
           data={completedKpiData}
           onClick={graphClick}
           dataLength={completedRowsState.length}
         />
-
-        <FormControlLabel
-          className={classes.checkBox}
-          control={
-            <Checkbox
-              checked={isDateFilter}
-              onChange={() => toggleDateFilter(!isDateFilter)}
-              value="checkedB"
-              color="primary"
-            />
-          }
-          labelPlacement="start"
-          label="Filter by Date?"
-        />
-        <TextField
-          id="date"
-          label="Begin Filter"
-          type="date"
-          value={
-            beginDateFilter.getDate()
-              ? beginDateFilter.toISOString().substring(0, 10)
-              : ""
-          }
-          onChange={e => setBeginDateFilter(new Date(e.target.value))}
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true
-          }}
-        />
-        <TextField
-          id="date"
-          label="End Filter"
-          type="date"
-          value={
-            endDateFilter.getDate()
-              ? endDateFilter.toISOString().substring(0, 10)
-              : ""
-          }
-          onChange={e => setEndDateFilter(new Date(e.target.value))}
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true
-          }}
-        />
-        <TextField
-          id="standard-number"
-          label="Days to completion KPI"
-          value={completionDaysGoal}
-          onChange={e => setCompletionDaysGoal(e.target.value)}
-          type="number"
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true
-          }}
-          margin="normal"
-        />
-        <InputLabel
-          htmlFor="whoFixed"
-          style={{ color: whoInverse ? "red" : "gray" }}
-        >
-          {whoInverse ? "Who Didn't Fix It?" : "Who Fixed It?"}
-        </InputLabel>
-        <Select
-          value={whoFixed}
-          onChange={e => whoSelectOnChange(e)}
-          inputProps={{
-            name: "who",
-            id: "whoFixed"
-          }}
-        >
-          <MenuItem value="showAll">
-            <em>Show All</em>
-          </MenuItem>
-          {whoFixedList.map(who => (
-            <MenuItem key={who} value={who}>
-              {who}
-            </MenuItem>
-          ))}
-        </Select>
       </Paper>
       {tableData.length > 0 && (
         <DataTable
           dataArray={tableData}
           keys={[2, 3, 5, 7]}
-          // columns={sheetData.columns.filter((column, key) => {
-          //   return key === 2 || key === 3 || key === 5 || key === 7;
-          // })}
           columns={sheetData.columns}
         />
       )}

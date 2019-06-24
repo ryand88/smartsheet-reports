@@ -3,7 +3,7 @@ export default (
   timeString = "00:00",
   timeZone = 0,
   skipWeekends = true,
-  startHour = 9,
+  startHour = 10,
   endHour = 17
 ) => {
   const dateObject = new Date(dateString);
