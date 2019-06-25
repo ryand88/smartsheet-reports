@@ -11,7 +11,7 @@ import SideDrawer from "./SideDrawer";
 
 const defaultCompleted = [
   {
-    kpiType: "Verbal Response",
+    kpiType: "Response",
     "KPI Made": 0,
     "KPI Missed": 0
   },
@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
 
 let whoFixedList = [];
 
-const ReportTest = ({ sheetId }) => {
+const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
   const [isDateFilter, toggleDateFilter] = useState(true);
   const [beginDateFilter, setBeginDateFilter] = useState(monthStart);
   const [endDateFilter, setEndDateFilter] = useState(monthEnd);
@@ -65,6 +65,7 @@ const ReportTest = ({ sheetId }) => {
   const [completionDaysGoal, setCompletionDaysGoal] = useState(10);
   const [whoFixed, setWhoFixed] = useState("showAll");
   const [whoInverse, setWhoInverse] = useState(false);
+  const [emergencyFilter, setEmergencyFilter] = useState(false);
 
   const classes = useStyles();
 
@@ -141,11 +142,20 @@ const ReportTest = ({ sheetId }) => {
     );
 
     if (whoFixed !== "showAll") {
-      console.log("filter ", whoFixed);
       completedRows = completedRows.filter(row => {
         return (row.cells[17].value === whoFixed) !== whoInverse;
       });
     }
+    const responseKPIhrs = emergencyFilter ? 1 : 2;
+    const onSiteKPIhrs = emergencyFilter ? 4 : 48;
+
+    completedRows = completedRows.filter(row => {
+      return (
+        row.cells[16].value === emergencyFilter ||
+        (!emergencyFilter && !row.cells[16].value)
+      );
+    });
+
     setCompletedRows(completedRows);
     setIncompleteRows(incompleteRows);
 
@@ -155,13 +165,13 @@ const ReportTest = ({ sheetId }) => {
           row.cells[8].value,
           row.cells[9].value,
           6,
-          true
+          !emergencyFilter
         );
         const verbalResponseTime = createDateObject(
           row.cells[10].value,
           row.cells[11].value,
           6,
-          true
+          !emergencyFilter
         );
         const onSiteTime = createDateObject(
           row.cells[12].value,
@@ -179,7 +189,7 @@ const ReportTest = ({ sheetId }) => {
         if (
           (verbalResponseTime.adjustedDate - verbalRequestTime.adjustedDate) /
             msToHrs >
-          2
+          responseKPIhrs
         ) {
           current[0]["KPI Missed"] = current[0]["KPI Missed"] + 1;
           verbalMissed.push(row);
@@ -193,7 +203,7 @@ const ReportTest = ({ sheetId }) => {
           onSiteNA.push(row);
         } else if (
           (onSiteTime.adjustedDate - verbalRequestTime.adjustedDate) / msToHrs >
-          48
+          onSiteKPIhrs
         ) {
           current[1]["KPI Missed"] = current[1]["KPI Missed"] + 1;
           onSiteMissed.push(row);
@@ -230,7 +240,7 @@ const ReportTest = ({ sheetId }) => {
 
       [
         {
-          kpiType: "Verbal Response",
+          kpiType: "Response",
           "KPI Made": 0,
           "KPI Missed": 0,
           "N/A": 0
@@ -275,11 +285,12 @@ const ReportTest = ({ sheetId }) => {
     beginDateFilter,
     endDateFilter,
     whoFixed,
-    whoInverse
+    whoInverse,
+    emergencyFilter
   ]);
 
   const graphClick = node => {
-    if (node.indexValue === "Verbal Response") {
+    if (node.indexValue === "Response") {
       if (node.id === "KPI Made") {
         setTableData(tables.verbalMade);
       } else {
@@ -315,6 +326,8 @@ const ReportTest = ({ sheetId }) => {
     <div className={classes.container}>
       <Paper className={classes.root}>
         <SideDrawer
+          mobileOpen={mobileOpen}
+          setMobileOpen={setMobileOpen}
           beginDateFilter={beginDateFilter}
           endDateFilter={endDateFilter}
           setBeginDateFilter={setBeginDateFilter}
@@ -327,6 +340,8 @@ const ReportTest = ({ sheetId }) => {
           whoFixedList={whoFixedList}
           whoInverse={whoInverse}
           whoSelectOnChange={whoSelectOnChange}
+          emergencyFilter={emergencyFilter}
+          setEmergencyFilter={setEmergencyFilter}
         />
         <BarChart
           data={completedKpiData}

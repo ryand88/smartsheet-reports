@@ -14,28 +14,36 @@ const useStyles = makeStyles(theme => ({
     zIndex: theme.zIndex.drawer + 1
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up("sm")]: {
+      display: "none"
+    }
   },
   title: {
     flexGrow: 1
   }
 }));
 
-export default function TopBar({ title = "enter a title prop" }) {
+export default function TopBar({
+  title = "enter a title prop",
+  mobileOpen,
+  setMobileOpen
+}) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <AppBar className={classes.appBar} position="sticky">
         <Toolbar>
-          {/* <IconButton
+          <IconButton
             edge="start"
             className={classes.menuButton}
             color="inherit"
             aria-label="Menu"
+            onClick={() => setMobileOpen(!mobileOpen)}
           >
             <MenuIcon />
-          </IconButton> */}
+          </IconButton>
           <Typography variant="h6" className={classes.title}>
             {title}
           </Typography>

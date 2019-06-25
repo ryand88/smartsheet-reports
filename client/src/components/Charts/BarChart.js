@@ -10,7 +10,7 @@ const BarChart = ({ data, onClick, dataLength = 1 }) => {
         data={data}
         keys={["KPI Made", "KPI Missed", "N/A"]}
         indexBy="kpiType"
-        margin={{ top: 50, right: 30, bottom: 50, left: 60 }}
+        margin={{ top: 50, right: 30, bottom: 50, left: 65 }}
         padding={0.3}
         layout="horizontal"
         // colors={{ from: "color" }}
@@ -48,8 +48,8 @@ const BarChart = ({ data, onClick, dataLength = 1 }) => {
           legendOffset: 32
         }}
         axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
+          tickSize: 3,
+          tickPadding: 1,
           tickRotation: 0,
           // legend: "Verbal Response Time",
           legendPosition: "middle",

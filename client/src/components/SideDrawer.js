@@ -1,17 +1,14 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
 import WatchLaterIcon from "@material-ui/icons/WatchLater";
 import BuildIcon from "@material-ui/icons/Build";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
+import WhatshotIcon from "@material-ui/icons/Whatshot";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -19,6 +16,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
+import IconButton from "@material-ui/core/IconButton";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 
 const drawerWidth = 240;
 
@@ -31,6 +30,13 @@ const useStyles = makeStyles(theme => ({
       width: drawerWidth,
       flexShrink: 0
     }
+  },
+  drawerHeader: {
+    display: "flex",
+    alignItems: "center",
+    padding: "0 8px",
+    ...theme.mixins.toolbar,
+    justifyContent: "flex-end"
   },
   appBar: {
     marginLeft: drawerWidth,
@@ -56,6 +62,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function ResponsiveDrawer(props) {
   const {
+    mobileOpen,
+    setMobileOpen,
     container,
     beginDateFilter = new Date(),
     endDateFilter = new Date(),
@@ -68,11 +76,12 @@ export default function ResponsiveDrawer(props) {
     whoFixed,
     whoFixedList,
     whoInverse,
-    whoSelectOnChange
+    whoSelectOnChange,
+    emergencyFilter,
+    setEmergencyFilter
   } = props;
   const classes = useStyles();
   const theme = useTheme();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
 
   function handleDrawerToggle() {
     setMobileOpen(!mobileOpen);
@@ -80,7 +89,7 @@ export default function ResponsiveDrawer(props) {
 
   const drawer = (
     <div>
-      <div className={classes.toolbar} />
+      {!mobileOpen && <div className={classes.toolbar} />}
       <Divider />
       <List>
         <ListItem>
@@ -101,7 +110,9 @@ export default function ResponsiveDrawer(props) {
           />
         </ListItem>
         <ListItem>
-          <ListItemIcon />
+          <ListItemIcon>
+            <span />
+          </ListItemIcon>
           <TextField
             id="date"
             label="Begin Filter"
@@ -119,7 +130,9 @@ export default function ResponsiveDrawer(props) {
           />
         </ListItem>
         <ListItem>
-          <ListItemIcon />
+          <ListItemIcon>
+            <span />
+          </ListItemIcon>
           <TextField
             id="date"
             label="End Filter"
@@ -139,6 +152,23 @@ export default function ResponsiveDrawer(props) {
       </List>
       <Divider />
       <List>
+        <ListItem>
+          <ListItemIcon>
+            <WhatshotIcon />
+          </ListItemIcon>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={emergencyFilter}
+                onChange={() => setEmergencyFilter(!emergencyFilter)}
+                value="checkedB"
+                color="primary"
+              />
+            }
+            labelPlacement="end"
+            label="Emergency Only"
+          />
+        </ListItem>
         <ListItem>
           <ListItemIcon>
             <WatchLaterIcon />
@@ -207,6 +237,11 @@ export default function ResponsiveDrawer(props) {
             keepMounted: true // Better open performance on mobile.
           }}
         >
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={() => setMobileOpen(false)}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
           {drawer}
         </Drawer>
       </Hidden>
@@ -224,9 +259,3 @@ export default function ResponsiveDrawer(props) {
     </nav>
   );
 }
-
-ResponsiveDrawer.propTypes = {
-  // Injected by the documentation to work in an iframe.
-  // You won't need it on your project.
-  container: PropTypes.object
-};

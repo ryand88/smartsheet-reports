@@ -23,6 +23,7 @@ const theme = createMuiTheme({
 function App() {
   const [auth, setAuth] = useState();
   const [user, setUser] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const isCallback = window.location.href.match(/callback/); // Check for callback URL
@@ -69,10 +70,19 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
-        <TopBar title="FM KPI's" />
+        <TopBar
+          title="FM KPI's"
+          mobileOpen={mobileOpen}
+          setMobileOpen={setMobileOpen}
+        />
         {user ? (
           <Router>
-            <ReportTest path="/" sheetId={7928597139744644} />
+            <ReportTest
+              path="/"
+              sheetId={7928597139744644}
+              mobileOpen={mobileOpen}
+              setMobileOpen={setMobileOpen}
+            />
             <SheetList path="/sheet-list" />
             <ReportTemplate path="/test" />
           </Router>
