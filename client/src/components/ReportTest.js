@@ -94,6 +94,7 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
   );
 
   useEffect(() => {
+    setTableData([]);
     let onSiteMade = [];
     let onSiteMissed = [];
     let onSiteNA = [];
