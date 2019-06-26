@@ -5,7 +5,18 @@ const BarChart = ({ data, onClick, dataLength = 1 }) => {
   return (
     <div style={{ height: `${data.length * 100}px`, width: "100%" }}>
       <ResponsiveBar
-        label={d => `${Math.round((d.value / dataLength) * 100)}%`}
+        label={d => {
+          const percent = (d.value / dataLength) * 100;
+          switch (d.id) {
+            case "KPI Made":
+              return `${Math.ceil(percent)}%`;
+            case "KPI Missed":
+              return `${Math.floor(percent)}%`;
+            default:
+              return `${Math.round(percent)}%`;
+          }
+        }}
+        labelFormat={d => <tspan style={{ fontSize: "1.6em" }}>{d}</tspan>}
         onClick={onClick}
         data={data}
         keys={["KPI Made", "KPI Missed", "N/A"]}
@@ -13,9 +24,19 @@ const BarChart = ({ data, onClick, dataLength = 1 }) => {
         margin={{ top: 50, right: 30, bottom: 50, left: 65 }}
         padding={0.3}
         layout="horizontal"
-        // colors={{ from: "color" }}
-        // colors={{ scheme: "dark2" }}
         colors={["#76d275", "#ff6659", "#bdbdbd"]}
+        // colors={d => {
+        //   switch (d.id) {
+        //     case "KPI Made":
+        //       return "#76d275";
+
+        //     case "KPI Missed":
+        //       return "#ff6659";
+
+        //     default:
+        //       return "#bdbdbd";
+        //   }
+        // }}
         defs={[
           {
             id: "dots",
