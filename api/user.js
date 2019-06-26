@@ -15,6 +15,7 @@ router.get("/current-user", (req, res) => {
       res.json(userProfile);
     })
     .catch(function(error) {
+      res.json(error);
       console.log(error);
     });
 });
