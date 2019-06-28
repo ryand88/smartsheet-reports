@@ -6,14 +6,20 @@ const BarChart = ({ data, onClick, dataLength = 1 }) => {
     <div style={{ height: `${data.length * 100}px`, width: "100%" }}>
       <ResponsiveBar
         label={d => {
-          const percent = (d.value / dataLength) * 100;
+          let percent = 0;
           switch (d.id) {
             case "KPI Made":
-              return `${Math.ceil(percent)}%`;
+              percent = Math.ceil(
+                (d.value / (dataLength - d.data["N/A"])) * 100
+              );
+              return `${percent}%`;
             case "KPI Missed":
-              return `${Math.floor(percent)}%`;
+              percent = Math.floor(
+                (d.value / (dataLength - d.data["N/A"])) * 100
+              );
+              return `${percent}%`;
             default:
-              return `${Math.round(percent)}%`;
+              return "N/A";
           }
         }}
         labelFormat={d => <tspan style={{ fontSize: "1.6em" }}>{d}</tspan>}
