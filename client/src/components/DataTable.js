@@ -20,8 +20,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function DataTable({ columns, dataArray, keys }) {
+function DataTable({
+  columns,
+  dataArray,
+  keys,
+  exceptionColumnIndex = -1,
+  sheetRows,
+  setSheetRows
+}) {
   const [modalData, setModalData] = useState({});
+
+  console.log(dataArray);
 
   const classes = useStyles();
 
@@ -55,11 +64,16 @@ function DataTable({ columns, dataArray, keys }) {
           })}
         </TableBody>
       </Table>
-      <TableModal
-        modalLabels={columns}
-        modalData={modalData}
-        handleClose={() => setModalData({})}
-      />
+      {modalData.cells && (
+        <TableModal
+          modalLabels={columns}
+          modalData={modalData}
+          handleClose={() => setModalData({})}
+          exceptionColumnIndex={exceptionColumnIndex}
+          sheetRows={sheetRows}
+          setSheetRows={setSheetRows}
+        />
+      )}
     </Paper>
   );
 }

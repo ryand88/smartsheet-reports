@@ -22,6 +22,9 @@ const defaultCompleted = [
   }
 ];
 
+const exceptionColumnId = 3570086125561732;
+let exceptionColumnIndex = -1;
+
 const now = new Date();
 const monthStart = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
 const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -85,6 +88,10 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
         setSheetData(res.data);
         setSheetRows(res.data.rows.filter(row => row.cells[8].value)); // remove rows without start date
 
+        exceptionColumnIndex = res.data.columns
+          .map(c => c.id)
+          .indexOf(exceptionColumnId);
+
         whoFixedList = [...res.data.columns[17].options];
 
         console.log(res.data);
@@ -97,14 +104,18 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
     setTableData([]);
     let onSiteMade = [];
     let onSiteMissed = [];
+    let onSiteException = [];
     let onSiteNA = [];
     let verbalMade = [];
     let verbalMissed = [];
+    let verbalException = [];
     let firstVisit = [];
     let firstVisitMissed = [];
+    let firstVisitException = [];
     let firstVisitNA = [];
     let completedOnTime = [];
     let completedOnTimeMissed = [];
+    let completedOnTimeException = [];
 
     let rows = [];
 
@@ -187,13 +198,21 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
           false
         );
         const msToHrs = 60 * 60 * 1000;
-        if (
+        const responseKPIMissed =
           (verbalResponseTime.adjustedDate - verbalRequestTime.adjustedDate) /
             msToHrs >
-          responseKPIhrs
-        ) {
+          responseKPIhrs;
+        const hasException = row.cells[exceptionColumnIndex].value
+          ? true
+          : false;
+        console.log(row.cells[exceptionColumnIndex].value);
+
+        if (responseKPIMissed && !hasException) {
           current[0]["KPI Missed"] = current[0]["KPI Missed"] + 1;
           verbalMissed.push(row);
+        } else if (hasException && responseKPIMissed) {
+          current[0]["KPI Exception"] = current[0]["KPI Exception"] + 1;
+          verbalException.push(row);
         } else {
           current[0]["KPI Made"] = current[0]["KPI Made"] + 1;
           verbalMade.push(row);
@@ -243,6 +262,7 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
         {
           kpiType: "Response",
           "KPI Made": 0,
+          "KPI Exception": 0,
           "KPI Missed": 0,
           "N/A": 0
         },
@@ -272,6 +292,7 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
       onSiteMissed,
       onSiteNA,
       verbalMade,
+      verbalException,
       verbalMissed,
       firstVisit,
       firstVisitMissed,
@@ -294,6 +315,8 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
     if (node.indexValue === "Response") {
       if (node.id === "KPI Made") {
         setTableData(tables.verbalMade);
+      } else if (node.id === "KPI Exception") {
+        setTableData(tables.verbalException);
       } else {
         setTableData(tables.verbalMissed);
       }
@@ -355,6 +378,9 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
           dataArray={tableData}
           keys={[2, 3, 5, 7]}
           columns={sheetData.columns}
+          exceptionColumnIndex={exceptionColumnIndex}
+          sheetRows={sheetRows}
+          setSheetRows={setSheetRows}
         />
       )}
     </div>

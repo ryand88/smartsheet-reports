@@ -10,9 +10,13 @@ const BarChart = ({ data, onClick, dataLength = 1 }) => {
           switch (d.id) {
             case "KPI Made":
               percent = Math.ceil(
-                (d.value / (dataLength - d.data["N/A"])) * 100
+                ((d.value + d.data["KPI Exception"]) /
+                  (dataLength - d.data["N/A"])) *
+                  100
               );
               return `${percent}%`;
+            case "KPI Exception":
+              return "";
             case "KPI Missed":
               percent = Math.floor(
                 (d.value / (dataLength - d.data["N/A"])) * 100
@@ -25,24 +29,24 @@ const BarChart = ({ data, onClick, dataLength = 1 }) => {
         labelFormat={d => <tspan style={{ fontSize: "1.6em" }}>{d}</tspan>}
         onClick={onClick}
         data={data}
-        keys={["KPI Made", "KPI Missed", "N/A"]}
+        keys={["KPI Made", "KPI Exception", "KPI Missed", "N/A"]}
         indexBy="kpiType"
         margin={{ top: 50, right: 30, bottom: 50, left: 65 }}
         padding={0.3}
         layout="horizontal"
-        colors={["#76d275", "#ff6659", "#bdbdbd"]}
-        // colors={d => {
-        //   switch (d.id) {
-        //     case "KPI Made":
-        //       return "#76d275";
-
-        //     case "KPI Missed":
-        //       return "#ff6659";
-
-        //     default:
-        //       return "#bdbdbd";
-        //   }
-        // }}
+        // colors={["#76d275", "#ff6659", "#bdbdbd"]}
+        colors={d => {
+          switch (d.id) {
+            case "KPI Made":
+              return "#76d275";
+            case "KPI Exception":
+              return "#76d275";
+            case "KPI Missed":
+              return "#ff6659";
+            default:
+              return "#bdbdbd";
+          }
+        }}
         defs={[
           {
             id: "dots",
@@ -57,10 +61,18 @@ const BarChart = ({ data, onClick, dataLength = 1 }) => {
             id: "lines",
             type: "patternLines",
             background: "inherit",
-            color: "#eed312",
+            color: "#a2a2a2",
             rotation: -45,
             lineWidth: 6,
             spacing: 10
+          }
+        ]}
+        fill={[
+          {
+            match: {
+              id: "KPI Exception"
+            },
+            id: "lines"
           }
         ]}
         borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}

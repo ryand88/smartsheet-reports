@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Modal from "@material-ui/core/Modal";
@@ -45,9 +45,19 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function TableModal({ modalLabels = {}, modalData = {}, handleClose }) {
-  // getModalStyle is not a pure function, we roll the style only on the first render
-  const [modalStyle] = React.useState(getModalStyle);
+function TableModal({
+  modalLabels = {},
+  modalData = { cells: [] },
+  handleClose,
+  exceptionColumnIndex = -1,
+  sheetRows,
+  setSheetRows
+}) {
+  console.log(modalData);
+  const [exceptionState, setExceptionState] = useState(
+    modalData.cells[exceptionColumnIndex].value
+  );
+
   const classes = useStyles();
 
   const open = modalData.cells ? true : false;
@@ -68,20 +78,36 @@ function TableModal({ modalLabels = {}, modalData = {}, handleClose }) {
         </Typography>
         <Divider className={classes.pushDown} />
         {open &&
-          modalData.cells.map((cell, key) => (
-            <TextField
-              key={cell.columnId}
-              id="outlined-read-only-input"
-              label={modalLabels[key].title}
-              defaultValue={cell.value || "N/A"}
-              className={classes.textField}
-              margin="normal"
-              InputProps={{
-                readOnly: true
-              }}
-              variant="outlined"
-            />
-          ))}
+          modalData.cells.map((cell, key) => {
+            const exception = key === exceptionColumnIndex;
+            return exception ? (
+              <React.Fragment key={cell.columnId}>
+                <br />
+                <TextField
+                  id="outlined-read-only-input"
+                  label={modalLabels[key].title}
+                  value={exceptionState}
+                  onChange={e => setExceptionState(e.target.value)}
+                  className={classes.textField}
+                  margin="normal"
+                  // variant="outlined"
+                />
+              </React.Fragment>
+            ) : (
+              <TextField
+                key={cell.columnId}
+                id="outlined-read-only-input"
+                label={modalLabels[key].title}
+                defaultValue={cell.value || "N/A"}
+                className={classes.textField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true
+                }}
+                variant="outlined"
+              />
+            );
+          })}
       </div>
     </Modal>
   );
