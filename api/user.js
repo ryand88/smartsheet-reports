@@ -12,10 +12,10 @@ router.get("/current-user", (req, res) => {
   smartsheet.users
     .getCurrentUser()
     .then(function(userProfile) {
-      res.json(userProfile);
+      res.status(200).json(userProfile);
     })
     .catch(function(error) {
-      res.json(error);
+      res.status(400).json(error);
       console.log(error);
     });
 });

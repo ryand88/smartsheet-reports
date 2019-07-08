@@ -54,6 +54,7 @@ function App() {
           // if user can't be fetched, redirect to smartsheet login
           err => {
             window.location.href = smartsheetRedirectURL;
+            console.log(err);
           }
         );
     } else if (localStorageAuth) {
