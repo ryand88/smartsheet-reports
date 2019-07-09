@@ -172,7 +172,7 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
           row.cells[10].value,
           row.cells[11].value,
           6,
-          !emergencyFilter
+          false
         );
         const onSiteTime = createDateObject(
           row.cells[12].value,
