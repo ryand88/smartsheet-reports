@@ -30,19 +30,19 @@ const BarChart = ({ data, onClick, dataLength = 1 }) => {
         margin={{ top: 50, right: 30, bottom: 50, left: 65 }}
         padding={0.3}
         layout="horizontal"
-        colors={["#76d275", "#ff6659", "#bdbdbd"]}
-        // colors={d => {
-        //   switch (d.id) {
-        //     case "KPI Made":
-        //       return "#76d275";
+        // colors={["#76d275", "#ff6659", "#bdbdbd"]}
+        colors={d => {
+          switch (d.id) {
+            case "KPI Made":
+              return "#76d275";
 
-        //     case "KPI Missed":
-        //       return "#ff6659";
+            case "KPI Missed":
+              return "#ff6659";
 
-        //     default:
-        //       return "#bdbdbd";
-        //   }
-        // }}
+            default:
+              return "#bdbdbd";
+          }
+        }}
         defs={[
           {
             id: "dots",
