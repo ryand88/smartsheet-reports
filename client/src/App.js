@@ -21,13 +21,14 @@ const theme = createMuiTheme({
   }
 });
 
-function App() {
+function App({ location }) {
   const [auth, setAuth] = useState();
   const [user, setUser] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const isCallback = window.location.href.match(/callback/); // Check for callback URL
+    const hrefState = window.location.href.match(/state=(.*)/); // Check for callback URL
     const localStorageAuth = localStorage.getItem("auth");
     if (isCallback) {
       // if "callback" is in the href,
@@ -39,7 +40,7 @@ function App() {
         // send code to node server to fetch auth key
         localStorage.setItem("auth", JSON.stringify(res.data));
         setAuth(res.data);
-        navigate("/");
+        navigate("/" + hrefState[1]);
       });
     } else if (auth) {
       // if auth state exists, fetch user data
@@ -54,7 +55,7 @@ function App() {
         .catch(
           // if user can't be fetched, redirect to smartsheet login
           err => {
-            window.location.href = smartsheetRedirectURL;
+            window.location.href = `${smartsheetRedirectURL}test`;
             console.log(err);
           }
         );
@@ -65,7 +66,8 @@ function App() {
     } else {
       console.log("else");
       // if no auth state or local storage, redirect to smartsheet login
-      window.location.href = smartsheetRedirectURL;
+      window.location.href =
+        smartsheetRedirectURL + location.pathname.replace("/", "");
     }
   }, [auth]);
 
