@@ -23,7 +23,7 @@ const defaultCompleted = [
 ];
 
 const now = new Date();
-const monthStart = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
+const monthStart = new Date(now.getFullYear(), now.getMonth(), 1, -6, 0, 0);
 const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
 const drawerWidth = 240;
@@ -123,15 +123,16 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
       rows = sheetRows;
     }
 
-    let completedRows = rows.filter(
-      row =>
+    let completedRows = rows.filter(row => {
+      return (
         row.cells[8].value &&
         row.cells[9].value &&
         row.cells[10].value &&
         row.cells[11].value &&
         // row.cells[16].value &&
         row.cells[14].value
-    );
+      );
+    });
     const incompleteRows = rows.filter(
       row =>
         !row.cells[8].value ||
@@ -162,6 +163,7 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
 
     const completedKPIs = completedRows.reduce(
       (current, row) => {
+        console.log(row);
         const verbalRequestTime = createDateObject(
           row.cells[8].value,
           row.cells[9].value,
@@ -187,6 +189,7 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
           false
         );
         const msToHrs = 60 * 60 * 1000;
+
         if (
           (verbalResponseTime.adjustedDate - verbalRequestTime.adjustedDate) /
             msToHrs >

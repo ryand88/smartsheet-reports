@@ -9,14 +9,15 @@ import TopBar from "./components/TopBar";
 import SheetList from "./components/SheetList";
 import ReportTest from "./components/ReportTest";
 import ReportTemplate from "./components/ReportTemplate";
+import IndividualKPIs from "./components/IndividualKPIs/IndividualKPIs";
 
 import setAuthToken from "./utils/setAuthToken";
 import smartsheetRedirectURL from "./utils/smartsheetRedirectURL";
 
 const theme = createMuiTheme({
   palette: {
-    primary: { main: lightGreen["A700"] }, // Purple and green play nicely together.
-    secondary: { main: deepOrange[500] } // This is just green.A700 as hex.
+    primary: { main: lightGreen["A700"] },
+    secondary: { main: deepOrange[500] }
   }
 });
 
@@ -86,6 +87,7 @@ function App() {
             />
             <SheetList path="/sheet-list" />
             <ReportTemplate path="/test" />
+            <IndividualKPIs path="/fmops"></IndividualKPIs>
           </Router>
         ) : (
           <h1>Loading...</h1>

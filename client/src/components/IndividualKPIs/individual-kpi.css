@@ -1,0 +1,23 @@
+.indiviual-kpi-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.graph-card {
+  /* text-align: center; */
+  margin: 4px 0;
+  box-shadow: 2px 4px 3px 1px #aaaaaa;
+  border: 1px solid lightgray;
+  height: 300px;
+  /* width: 100px; */
+}
+
+@media only screen and (min-width: 800px) {
+  .indiviual-kpi-container {
+    grid-template-columns: 1fr 1fr;
+  }
+  .graph-card {
+    margin: 10px;
+  }
+}

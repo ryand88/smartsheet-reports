@@ -9,12 +9,17 @@ const BarChartTemplate = ({
   // colors = ["#76d275", "#ff6659", "#bdbdbd"],
   colors,
   bottomLegend = "123",
-  layout = "horizontal"
+  layout = "horizontal",
+  minValue,
+  maxValue,
+  legends = true
 }) => {
   console.log(keys);
   return (
     <div style={{ height: `${data.length * 100}px`, width: "100%" }}>
       <ResponsiveBar
+        minValue={minValue}
+        maxValue={maxValue}
         onClick={onClick}
         data={data}
         keys={keys}
@@ -23,6 +28,7 @@ const BarChartTemplate = ({
         padding={0.3}
         layout={layout}
         colors={colors}
+        colorBy="index"
         borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
         axisTop={null}
         axisRight={null}
@@ -47,30 +53,32 @@ const BarChartTemplate = ({
         labelSkipWidth={12}
         labelSkipHeight={12}
         labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-        legends={[
-          {
-            dataFrom: "keys",
-            anchor: "top-left",
-            direction: "row",
-            justify: false,
-            translateX: 0,
-            translateY: -10,
-            itemsSpacing: 2,
-            itemWidth: 100,
-            itemHeight: 20,
-            itemDirection: "left-to-right",
-            itemOpacity: 0.85,
-            symbolSize: 20,
-            effects: [
-              {
-                on: "hover",
-                style: {
-                  itemOpacity: 0.5
+        legends={
+          legends && [
+            {
+              dataFrom: "keys",
+              anchor: "top-left",
+              direction: "row",
+              justify: false,
+              translateX: 0,
+              translateY: -10,
+              itemsSpacing: 2,
+              itemWidth: 100,
+              itemHeight: 20,
+              itemDirection: "left-to-right",
+              itemOpacity: 0.85,
+              symbolSize: 20,
+              effects: [
+                {
+                  on: "hover",
+                  style: {
+                    itemOpacity: 0.5
+                  }
                 }
-              }
-            ]
-          }
-        ]}
+              ]
+            }
+          ]
+        }
         animate={true}
         motionStiffness={90}
         motionDamping={15}
