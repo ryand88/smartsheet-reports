@@ -8,7 +8,7 @@ import { lightGreen, deepOrange } from "@material-ui/core/colors";
 import TopBar from "./components/TopBar";
 import SheetList from "./components/SheetList";
 import ReportTest from "./components/ReportTest";
-import ReportTemplate from "./components/ReportTemplate";
+// import ReportTemplate from "./components/ReportTemplate";
 import IndividualKPIs from "./components/IndividualKPIs/IndividualKPIs";
 
 import setAuthToken from "./utils/setAuthToken";
@@ -26,6 +26,8 @@ function App({ location }) {
   const [user, setUser] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  console.log(location);
+
   useEffect(() => {
     const isCallback = window.location.href.match(/callback/); // Check for callback URL
     const hrefState = window.location.href.match(/state=(.*)/); // Check for callback URL
@@ -40,7 +42,7 @@ function App({ location }) {
         // send code to node server to fetch auth key
         localStorage.setItem("auth", JSON.stringify(res.data));
         setAuth(res.data);
-        navigate("/" + hrefState[1]);
+        // navigate("/" + hrefState[1]);
       });
     } else if (auth) {
       // if auth state exists, fetch user data
@@ -71,11 +73,14 @@ function App({ location }) {
     }
   }, [auth]);
 
+  const routeTitles = { "/fmops": "Personal KPI's", "/": "FM KPI's" };
+  const currentRoute = location.pathname;
+
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
         <TopBar
-          title="FM KPI's"
+          title={routeTitles[currentRoute] ? routeTitles[currentRoute] : "FFG"}
           mobileOpen={mobileOpen}
           setMobileOpen={setMobileOpen}
         />
@@ -88,7 +93,7 @@ function App({ location }) {
               setMobileOpen={setMobileOpen}
             />
             <SheetList path="/sheet-list" />
-            <ReportTemplate path="/test" />
+            {/* <ReportTemplate path="/test" /> */}
             <IndividualKPIs path="/fmops"></IndividualKPIs>
           </Router>
         ) : (
