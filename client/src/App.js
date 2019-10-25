@@ -26,8 +26,6 @@ function App({ location }) {
   const [user, setUser] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  console.log(location);
-
   useEffect(() => {
     const isCallback = window.location.href.match(/callback/); // Check for callback URL
     const hrefState = window.location.href.match(/state=(.*)/); // Check for callback URL
@@ -42,7 +40,7 @@ function App({ location }) {
         // send code to node server to fetch auth key
         localStorage.setItem("auth", JSON.stringify(res.data));
         setAuth(res.data);
-        // navigate("/" + hrefState[1]);
+        navigate("/" + hrefState[1]);
       });
     } else if (auth) {
       // if auth state exists, fetch user data
@@ -51,7 +49,6 @@ function App({ location }) {
       axios
         .get("/api/user/current-user")
         .then(res => {
-          console.log(res.data);
           setUser(res.data);
         })
         .catch(
@@ -62,11 +59,9 @@ function App({ location }) {
           }
         );
     } else if (localStorageAuth) {
-      console.log("local");
       // if no auth state, but in local storage, copy local storage to auth state
       setAuth(JSON.parse(localStorageAuth));
     } else {
-      console.log("else");
       // if no auth state or local storage, redirect to smartsheet login
       window.location.href =
         smartsheetRedirectURL + location.pathname.replace("/", "");
