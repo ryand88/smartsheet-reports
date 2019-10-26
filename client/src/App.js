@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { Router, navigate } from "@reach/router";
 import axios from "axios";
@@ -5,11 +6,14 @@ import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import { lightGreen, deepOrange } from "@material-ui/core/colors";
 
+import "./App.css";
+
 import TopBar from "./components/TopBar";
 import SheetList from "./components/SheetList";
 import ReportTest from "./components/ReportTest";
 // import ReportTemplate from "./components/ReportTemplate";
 import IndividualKPIs from "./components/IndividualKPIs/IndividualKPIs";
+import SoloDashboard from "./components/SoloDashboard/SoloDashboard";
 
 import setAuthToken from "./utils/setAuthToken";
 import smartsheetRedirectURL from "./utils/smartsheetRedirectURL";
@@ -90,6 +94,7 @@ function App({ location }) {
             <SheetList path="/sheet-list" />
             {/* <ReportTemplate path="/test" /> */}
             <IndividualKPIs path="/fmops"></IndividualKPIs>
+            <SoloDashboard path="/dashboard"></SoloDashboard>
           </Router>
         ) : (
           <h1>Loading...</h1>

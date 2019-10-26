@@ -1,0 +1,124 @@
+.commit-calendar-container {
+  position: relative;
+  display: inline-block;
+  padding: 22px 10px 10px 10px;
+  max-width: 100%;
+  align-items: end;
+}
+
+.commit-calendar-inner-container {
+  overflow-x: hidden;
+}
+
+.block-container {
+  /* width: 100%; */
+  float: right;
+  display: grid;
+  grid-auto-flow: column;
+  /* grid-template-columns: auto; */
+  grid-template-rows: repeat(7, 1fr);
+  grid-column-gap: 2px;
+  grid-row-gap: 2px;
+  justify-content: start;
+}
+
+.block-legend-container {
+  position: absolute;
+  left: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+
+.block-day-legend {
+  height: 20px;
+  font-size: 12px;
+  margin: 0 5px;
+  text-align: right;
+}
+
+.commit-calendar-block {
+  height: 18px;
+  width: 18px;
+  background-color: lightgray;
+}
+
+.block-data-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.commit-calendar-month {
+  position: absolute;
+  top: 0px;
+  font-size: 14px;
+  padding-left: 2px;
+}
+
+.block-tag {
+  height: 60px;
+  width: 120px;
+  visibility: hidden;
+  padding: 10px;
+  background-color: darkslategray;
+  color: white;
+  position: absolute;
+  z-index: 100;
+  border-radius: 9px;
+  margin-top: -65px;
+  margin-left: -50px;
+}
+
+.commit-calendar-block:hover .block-tag {
+  visibility: visible;
+}
+
+.commit-calendar-modal {
+  position: fixed;
+  z-index: 5000;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(138, 138, 138, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.calendar-modal-display {
+  border-radius: 8px;
+  box-shadow: 2px 2px 5px 2px gray;
+  margin-top: 75px;
+  padding: 12px;
+  height: auto;
+  background-color: white;
+}
+
+.modal-title {
+  text-align: center;
+}
+
+.modal-list {
+  list-style: none;
+  padding: 0;
+}
+
+.modal-list li {
+  list-style: none;
+  padding: 8px 1px;
+  border-bottom: .5px solid lightgray;
+}
+
+.modal-list li:last-child {
+  border-bottom: none;
+}
+
+@media only screen and (max-width: 800px) {
+  .commit-calendar-block {
+    height: 12px;
+    width: 12px;
+  }
+}

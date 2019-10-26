@@ -8,6 +8,7 @@ import createDateObject from "../utils/createDateObject";
 import BarChart from "./Charts/BarChart";
 import DataTable from "./DataTable";
 import SideDrawer from "./SideDrawer";
+import CommitCalendar from "./CommitCalendar/CommitCalendar";
 
 const defaultCompleted = [
   {
@@ -49,6 +50,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+let commitCalendarData = [];
 let whoFixedList = [];
 
 const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
@@ -86,8 +88,6 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
         setSheetRows(res.data.rows.filter(row => row.cells[8].value)); // remove rows without start date
 
         whoFixedList = [...res.data.columns[17].options];
-
-        console.log(res.data);
       });
     },
     [sheetId]
@@ -123,6 +123,18 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
       rows = sheetRows;
     }
 
+    commitCalendarData = sheetRows.map(item => {
+      const location = item.cells[3].value;
+      const brand = item.cells[2].value;
+      const text = item.cells[5].value;
+
+      return {
+        date: item.cells[1].value,
+        text: `${location && location.toUpperCase()} - ${brand &&
+          brand.toUpperCase()}: ${text}`
+      };
+    });
+
     let completedRows = rows.filter(row => {
       return (
         row.cells[8].value &&
@@ -133,6 +145,7 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
         row.cells[14].value
       );
     });
+
     const incompleteRows = rows.filter(
       row =>
         !row.cells[8].value ||
@@ -163,7 +176,6 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
 
     const completedKPIs = completedRows.reduce(
       (current, row) => {
-        console.log(row);
         const verbalRequestTime = createDateObject(
           row.cells[8].value,
           row.cells[9].value,
@@ -329,6 +341,14 @@ const ReportTest = ({ sheetId, mobileOpen, setMobileOpen }) => {
   return (
     <div className={classes.container}>
       <Paper className={classes.root}>
+        <div className="fm-calendar-container">
+          <CommitCalendar
+            weeks={32}
+            dataArray={commitCalendarData}
+            label="Requests"
+          />
+        </div>
+
         <SideDrawer
           mobileOpen={mobileOpen}
           setMobileOpen={setMobileOpen}
