@@ -121,4 +121,9 @@
     height: 12px;
     width: 12px;
   }
+  .block-day-legend {
+    height: 12px;
+    font-size: 10px;
+    margin: 1px 5px;
+  }
 }
